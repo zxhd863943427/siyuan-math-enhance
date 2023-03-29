@@ -5,6 +5,7 @@ import sheet from './components/sheet.vue'
 import { Plugin, Menu, clientApi } from 'siyuan'
 
 import {settingList,getSetting} from "./utils/config"
+import {debug} from "./utils/math"
 
 
 
@@ -14,6 +15,9 @@ export default class CardPlugin extends Plugin {
     public settingConfig : any
 
     constructor() {
+
+        debug()
+
         super()
         this.el = document.createElement('div')
         this.el.classList.add('toolbar__item', 'b3-tooltips', 'b3-tooltips__se')
@@ -58,6 +62,10 @@ export default class CardPlugin extends Plugin {
     // })
 
         //插入小型功能sheet
+        const AppSheet = createApp(sheet,this.settingConfig)
+        AppSheet.mount(this.sheet)
+        let base = document.querySelector("head")
+        base?.appendChild(this.sheet)
 
         watch(settingList.setList,()=>{this.writeConfig()})
     }
