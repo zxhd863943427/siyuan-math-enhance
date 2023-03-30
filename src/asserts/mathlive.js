@@ -23574,7 +23574,7 @@ Note there are a different set of tooltip rules for the keyboard toggle
   // src/common/script-url.ts
   function getFileUrl() {
     // 临时计策，test
-    return ""
+    return "127.0.0.1:6806"
     const stackTraceFrames = String(new Error().stack).replace(/^Error.*\n/, "").split("\n");
     if (stackTraceFrames.length === 0) {
       console.error(

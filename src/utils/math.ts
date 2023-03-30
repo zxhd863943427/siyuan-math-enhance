@@ -64,7 +64,7 @@ function addMathLiveListener(latexBlock:HTMLTextAreaElement,MathLiveBlock:any){
         latexBlock.value = expendLatex.replace(/\{\\textcolor\{#6495ed\}\{(.+?)\}\}/g, "\\mark{$1}").replace(/\\textcolor\{#6495ed\}\{(.+?)\}/g, "\\mark{$1}");
         if (tempLatex === MathLiveBlock.value) {
             tempLatex = MathLiveBlock.value;
-            console.log(tempLatex)
+            // console.log(tempLatex)
             return
         }
         tempLatex = MathLiveBlock.value;
