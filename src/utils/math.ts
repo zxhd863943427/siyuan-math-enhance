@@ -11,6 +11,7 @@ declare global {
 function renderMathLive(naiveDom:boolean,originMathBlock:HTMLDivElement){
     console.log("click!")
     //初始化获得输入框元素
+    initVitrualKeyboard()
     var textBlock = document.querySelector(".block__popover--move")
     var latexBlock:HTMLTextAreaElement|null = document.querySelector(".block__popover--move > textarea")
 
@@ -51,7 +52,7 @@ function addMathLiveListener(latexBlock:HTMLTextAreaElement,MathLiveBlock:any){
         //替换标记宏
         var expendLatex = MathLiveBlock.getValue("latex-expanded");
         
-        latexBlock.value = expendLatex.replace(/\{\\textcolor\{#6495ed\}\{(.+?)\}\}/g, "\\mark{$1}");
+        latexBlock.value = expendLatex.replace(/\{\\textcolor\{#6495ed\}\{(.+?)\}\}/g, "\\mark{$1}").replace(/\\textcolor\{#6495ed\}\{(.+?)\}/g, "\\mark{$1}");
         if (tempLatex === MathLiveBlock.value) {
             tempLatex = MathLiveBlock.value;
             console.log(tempLatex)
@@ -81,7 +82,7 @@ function initMathLiveBlock(latexBlock:HTMLTextAreaElement):HTMLTextAreaElement{
         ...mathLiveBlock.macros,
         mark: {
             args: 1,
-            def: "{\\color{#6495ed}#1}",
+            def: "\\textcolor{#6495ed}{#1}",
             captureSelection: false,
         },
     };
@@ -119,6 +120,51 @@ function debug(){
         var originMathBlock = event.target;
         setTimeout(()=>{renderMathLive(false,originMathBlock)},10);
     });
+    setTimeout(initVitrualKeyboard,2000)
     
-    
+}
+
+function initVitrualKeyboard() {
+    mathVirtualKeyboard.layouts[0].layers[0].markup =`
+<div class='MLK__rows'>
+  <ul>
+    <li class='MLK__keycap MLK__tex' data-variants='x-var'><i>x</i></li>
+    <li class='MLK__keycap MLK__tex' data-variants='n-var'><i>n</i></li>
+    <li class='separator w5'></li>
+    <row name='numpad-1'/>
+    <li class='separator w5'></li>
+    <li class='MLK__keycap MLK__tex' data-latex='\exponentialE' data-variants='ee'>e</li>
+    <li class='MLK__keycap MLK__tex' data-latex='\imaginaryI' data-variants='ii'>i</li>
+    <li class='MLK__keycap MLK__tex' data-latex='\pi' data-variants='numeric-pi'></li>
+  </ul>
+  <ul>
+    <li class='MLK__keycap MLK__tex' data-key='<' data-variants='<'>&lt;</li>
+    <li class='MLK__keycap MLK__tex' data-key='>' data-variants='>'>&gt;</li>
+    <li class='separator w5'></li>
+    <row name='numpad-2'/>
+    <li class='separator w5'></li>
+    <li class='MLK__keycap MLK__tex' data-latex='#@^{2}' data-latex='x^2'></li>
+    <li class='MLK__keycap MLK__tex' data-variants='^' data-insert='#@^{#?}' data-latex='x^\placeholder'></li>
+    <li class='MLK__keycap MLK__tex small' data-insert='\sqrt{#0}' data-latex='\sqrt{#0}'></li>
+  </ul>
+  <ul>
+    <li class='MLK__keycap MLK__tex' data-variants='(' >(</li>
+    <li class='MLK__keycap MLK__tex' data-variants=')' >)</li>
+    <li class='separator w5'></li>
+    <row name='numpad-3'/>
+    <li class='separator w5'></li>
+    <li class='MLK__keycap small' data-variants='int' data-latex='\int_0^\infty'></li>
+    <li class='MLK__keycap' data-latex='\forall' data-variants='logic' ></li>
+    <li class='action font-glyph bottom right' data-variants='delete' data-command='["performWithFeedback","deleteBackward"]'><svg class="svg-glyph"><use xlink:href="#svg-delete-backward" /></svg></li></ul>
+  </ul>
+  <ul>
+    <li class='MLK__keycap' data-variants='foreground-color' data-command='["applyStyle",{"color":"#6495ed"}]'><span style='color:#6495ed'>[...]</span></li>
+    <li class='MLK__keycap' data-variants='background-color' data-command='["applyStyle",{"backgroundColor":"yellow"}]'><span style='border-radius: 50%;width:22px;height:22px; background:#fff590; box-sizing: border-box'></span></li>
+    <li class='separator w5'></li>
+    <row name='numpad-4'/>
+    <li class='separator w5'></li>
+    <arrows/>
+  </ul>
+</div>
+    `
 }

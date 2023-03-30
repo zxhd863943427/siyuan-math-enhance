@@ -12,7 +12,6 @@
   },
   "dependencies": {
     "jquery": "^3.6.4",
-    "mathlive": "^0.90.8",
     "siyuan": "^0.3.17",
     "unplugin-auto-import": "^0.15.1",
     "unplugin-vue-components": "^0.24.1",

@@ -15,9 +15,9 @@ const props = defineProps({
     dangerousFeature: Array<{ content: string, func: () => void }>
 })
 
-var script = document.createElement("script");
-script.type = "text/javascript";
-script.src = "//unpkg.com/mathlive";
-document.body.appendChild(script);
+// var script = document.createElement("script");
+// script.type = "text/javascript";
+// script.src = "//unpkg.com/mathlive@0.90.10/dist/mathlive.js";
+// document.body.appendChild(script);
 
 </script>

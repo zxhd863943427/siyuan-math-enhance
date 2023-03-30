@@ -3,6 +3,7 @@
     "allowJs": true,
     "types":["node"]
   },
+ "module":"es6",
   "files": [],
   "references": [
     {

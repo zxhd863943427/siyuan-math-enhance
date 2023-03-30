@@ -7,7 +7,7 @@ import { Plugin, Menu, clientApi } from 'siyuan'
 import {settingList,getSetting} from "./utils/config"
 import {debug} from "./utils/math"
 
-
+import {mathlive} from "./asserts/mathlive"
 
 export default class CardPlugin extends Plugin {
     public el: HTMLElement
@@ -32,23 +32,23 @@ export default class CardPlugin extends Plugin {
         this.settingConfig = await getSetting(localConfig)
         console.log("数学增强当前配置：\n",settingList.getSetting())
 
-        const button = createApp(TopButton)
-        button.mount(this.el)
+        // const button = createApp(TopButton)
+        // button.mount(this.el)
         // //添加左键一键制卡功能
         // this.el.addEventListener('click', (event) => {
         //     addCards(this.settingConfig.labFeature[0]["status"].value)
         //     event.stopPropagation()
         //     event.preventDefault()
         // })
-        //添加右键打开菜单功能
-        this.el.addEventListener('contextmenu', (event) => {
-            const menu = document.createElement('div')
-            const app = createApp(App,this.settingConfig)
-            app.mount(menu)
-            new Menu('CardPlugin').addItem({ element: menu }).showAtMouseEvent(event)
-            event.stopPropagation()
-        })
-        clientApi.addToolbarLeft(this.el)
+        // //添加右键打开菜单功能
+        // this.el.addEventListener('contextmenu', (event) => {
+        //     const menu = document.createElement('div')
+        //     const app = createApp(App,this.settingConfig)
+        //     app.mount(menu)
+        //     new Menu('CardPlugin').addItem({ element: menu }).showAtMouseEvent(event)
+        //     event.stopPropagation()
+        // })
+        // clientApi.addToolbarLeft(this.el)
 
     //     //注册动态制卡快捷键
     //     this.registerCommand({
