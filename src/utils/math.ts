@@ -9,7 +9,6 @@ declare global {
     var MathfieldElement:any;
   }
 
-var dyBlock = document.createElement("div")
 
 function renderMathLive(naiveDom:boolean,originMathBlock:HTMLDivElement,debug:boolean=false){
     // console.log("click!")
@@ -32,7 +31,8 @@ function renderMathLive(naiveDom:boolean,originMathBlock:HTMLDivElement,debug:bo
 
 
 
-    
+    var dyBlock = document.createElement("div")
+    dyBlock.id = "mathEnhanceDyBlock"
     var keyboardBlock = initkeyboardBlock()
     var MathLiveBlock = initMathLiveBlock(latexBlock)
 
@@ -85,7 +85,7 @@ function addMathLiveListener(latexBlock:HTMLTextAreaElement,MathLiveBlock:any){
 function initMathLiveBlock(latexBlock:HTMLTextAreaElement):HTMLTextAreaElement{
 
     var mathLiveBlock:any = document.createElement("math-field")
-    mathLiveBlock.style.minWidth = latexBlock.style.width
+    mathLiveBlock.style.width = "-webkit-fill-available"
     mathLiveBlock.value = latexBlock.value;
     mathLiveBlock.macros = {
         ...mathLiveBlock.macros,
@@ -181,6 +181,6 @@ function initVitrualKeyboard() {
 
 function removeMathLive() {
     currentLayout.off('mouseup', '[data-subtype="math"]', initMathLiveRender);
-
-    dyBlock.remove()
+    var dyBlock:HTMLElement|null = document.querySelector("#mathEnhanceDyBlock")
+    dyBlock?.remove()
 }
