@@ -1,4 +1,4 @@
-export {renderMathLive,debug}
+export {renderMathLive,initMathLive,removeMathLive}
 
 
 import {currentLayout} from "./listener"
@@ -6,10 +6,13 @@ import {currentLayout} from "./listener"
 
 declare global {
     var mathVirtualKeyboard: any;
+    var MathfieldElement:any;
   }
 
-function renderMathLive(naiveDom:boolean,originMathBlock:HTMLDivElement){
-    console.log("click!")
+var dyBlock = document.createElement("div")
+
+function renderMathLive(naiveDom:boolean,originMathBlock:HTMLDivElement,debug:boolean=false){
+    // console.log("click!")
     //初始化获得输入框元素
     initVitrualKeyboard()
     var textBlock = document.querySelector(".block__popover--move")
@@ -20,10 +23,16 @@ function renderMathLive(naiveDom:boolean,originMathBlock:HTMLDivElement){
         console.log(`textBlock ${textBlock} ||  latexBlock ${latexBlock} `)
         return;
     }
-    console.log("renderMathLive 初始化获得输入框元素成功！")
-    console.log(`textBlock ${textBlock} ||  latexBlock ${latexBlock} `)
 
-    var dyBlock = document.createElement("div")
+    if (debug===true){
+
+        console.log("renderMathLive 初始化获得输入框元素成功！")
+        console.log(`textBlock ${textBlock} ||  latexBlock ${latexBlock} `)
+    }
+
+
+
+    
     var keyboardBlock = initkeyboardBlock()
     var MathLiveBlock = initMathLiveBlock(latexBlock)
 
@@ -111,18 +120,19 @@ function initStyle() {
     document.body.style.setProperty("--keycap-font-size", "1.2em");
 }
 
-function debug(){
-    console.log(currentLayout)
-
+function initMathLive(){
     initStyle()
-
-    currentLayout.on('mouseup', '[data-subtype="math"]', function(event:any) {
-        var originMathBlock = event.target;
-        setTimeout(()=>{renderMathLive(false,originMathBlock)},10);
-    });
-    setTimeout(initVitrualKeyboard,2000)
+    currentLayout.on('mouseup', '[data-subtype="math"]', initMathLiveRender);
+    // setTimeout(initVitrualKeyboard,2000)
     
 }
+
+
+function initMathLiveRender(event: any) {
+        var originMathBlock = event.target;
+        setTimeout(() => { renderMathLive(false, originMathBlock); }, 10);
+    };
+
 
 function initVitrualKeyboard() {
     mathVirtualKeyboard.layouts[0].layers[0].markup =`
@@ -167,4 +177,10 @@ function initVitrualKeyboard() {
   </ul>
 </div>
     `
+}
+
+function removeMathLive() {
+    currentLayout.off('mouseup', '[data-subtype="math"]', initMathLiveRender);
+
+    dyBlock.remove()
 }

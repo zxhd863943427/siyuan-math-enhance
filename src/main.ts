@@ -5,7 +5,7 @@ import sheet from './components/sheet.vue'
 import { Plugin, Menu, clientApi } from 'siyuan'
 
 import {settingList,getSetting} from "./utils/config"
-import {debug} from "./utils/math"
+import {initMathLive,removeMathLive} from "./utils/math"
 
 import {mathlive} from "./asserts/mathlive"
 
@@ -16,7 +16,7 @@ export default class CardPlugin extends Plugin {
 
     constructor() {
 
-        debug()
+        initMathLive()
 
         super()
         this.el = document.createElement('div')
@@ -73,6 +73,7 @@ export default class CardPlugin extends Plugin {
     async onunload() {
         this.el && this.el.remove();
         this.sheet && this.sheet.remove();
+        removeMathLive();
         this.writeConfig()
     }
 
