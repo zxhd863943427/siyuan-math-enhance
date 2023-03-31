@@ -54,7 +54,7 @@ export default defineConfig({
         rollupOptions: {
             external: ['siyuan']
         },
-        minify: false === true ? false : "terser",
+        minify: debugMode === true ? false : "terser",
         terserOptions: {
           compress: {
             // 生产环境时移除console

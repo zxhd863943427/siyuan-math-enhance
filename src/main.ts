@@ -31,6 +31,7 @@ export default class CardPlugin extends Plugin {
         let localConfig = await this.loadStorage("enhanceConfig.json")
         this.settingConfig = await getSetting(localConfig)
         console.log("数学增强当前配置：\n",settingList.getSetting())
+        this.writeConfig()
 
         // const button = createApp(TopButton)
         // button.mount(this.el)
