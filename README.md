@@ -16,3 +16,5 @@
 [svchord](https://github.com/svchord) 大佬 [日历插件项目](https://github.com/svchord/siyuan-arco-calendar) 的参考
 
 [CortexJS](https://cortexjs.io/mathlive/)提供了主要功能实现，我只是完成了功能包装。
+
+[leolee9086](https://github.com/leolee9086) 大佬提供了更好的事件捕获代码，让插件能捕获数学块创建事件了
