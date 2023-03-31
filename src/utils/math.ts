@@ -124,7 +124,7 @@ function initMathLive(){
     initStyle()
     currentLayout.on('mouseup', '[data-subtype="math"]', initMathLiveRender);
     // setTimeout(initVitrualKeyboard,2000)
-    
+    MathfieldElement.soundsDirectory=null;
 }
 
 
