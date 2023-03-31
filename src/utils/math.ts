@@ -2,11 +2,13 @@ export {renderMathLive,initMathLive,removeMathLive}
 
 
 import {currentLayout} from "./listener"
+import {DOM监听器} from "./domWatcher"
 
 
 declare global {
     var mathVirtualKeyboard: any;
     var MathfieldElement:any;
+    var siyuan:any;
   }
 
 
@@ -14,8 +16,14 @@ function renderMathLive(naiveDom:boolean,originMathBlock:HTMLDivElement,debug:bo
     // console.log("click!")
     //初始化获得输入框元素
     initVitrualKeyboard()
-    var textBlock = document.querySelector(".block__popover--move")
-    var latexBlock:HTMLTextAreaElement|null = document.querySelector(".block__popover--move > textarea")
+    //获取当前屏幕
+    let currentScreen:any = document.querySelector(".layout__wnd--active");
+    //获取当前页面
+    let currentPage = currentScreen.querySelector(
+        ".fn__flex-1.protyle:not(.fn__none)"
+    );
+    var textBlock = currentPage.querySelector(".block__popover--move")
+    var latexBlock:HTMLTextAreaElement|null = currentPage.querySelector(".block__popover--move > textarea")
 
     if (!textBlock ||  !latexBlock){
         console.log("renderMathLive 初始化获得输入框元素错误！")
@@ -86,6 +94,7 @@ function initMathLiveBlock(latexBlock:HTMLTextAreaElement):HTMLTextAreaElement{
 
     var mathLiveBlock:any = document.createElement("math-field")
     mathLiveBlock.style.width = "-webkit-fill-available"
+    mathLiveBlock.style.fontSize = "1.25em";
     mathLiveBlock.value = latexBlock.value;
     mathLiveBlock.macros = {
         ...mathLiveBlock.macros,
@@ -122,13 +131,27 @@ function initStyle() {
 
 function initMathLive(){
     initStyle()
-    currentLayout.on('mouseup', '[data-subtype="math"]', initMathLiveRender);
+    // currentLayout.on('mouseup', '[data-subtype="math"]', initMathLiveRender);
+    const testDomwatcher =new DOM监听器({
+        监听选项:{childList: true},
+        监听目标:'.protyle-util',
+        监听器回调:(mutationRecord:any, observer:any)=>{
+            console.log("捕获点击事件")
+            var innerText = mutationRecord.target.querySelector("div.block__icons").innerText
+            if (innerText === siyuan.languages["inline-math"] || innerText === siyuan.languages["math"]){
+                console.log("捕获点击数学公式事件")
+                console.log(mutationRecord)
+                initMathLiveRender(mutationRecord)
+            }
+        }
+      })
     // setTimeout(initVitrualKeyboard,2000)
     MathfieldElement.soundsDirectory=null;
 }
 
 
 function initMathLiveRender(event: any) {
+        console.log("initMathLiveRender: ",event);
         var originMathBlock = event.target;
         setTimeout(() => { renderMathLive(false, originMathBlock); }, 10);
     };
