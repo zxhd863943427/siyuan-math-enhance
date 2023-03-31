@@ -91,7 +91,7 @@ function initMathLiveBlock(latexBlock:HTMLTextAreaElement):HTMLTextAreaElement{
         ...mathLiveBlock.macros,
         mark: {
             args: 1,
-            def: "\\textcolor{#6495ed}{#1}",
+            def: "{\\color{#6495ed}#1}",
             captureSelection: false,
         },
     };
