@@ -9,6 +9,8 @@ import { ArcoResolver } from 'unplugin-vue-components/resolvers'
 
 import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js'
 
+var debugMode:any = false;
+
 // https://vitejs.dev/config/
 export default defineConfig({
     plugins: [
@@ -52,6 +54,13 @@ export default defineConfig({
         rollupOptions: {
             external: ['siyuan']
         },
-        minify: false,
+        minify: false === true ? false : "terser",
+        terserOptions: {
+          compress: {
+            // 生产环境时移除console
+            drop_console: true,
+            drop_debugger: true,
+          },
+        },
     }
 })

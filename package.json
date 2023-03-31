@@ -13,6 +13,7 @@
   "dependencies": {
     "jquery": "^3.6.4",
     "siyuan": "^0.3.17",
+    "terser": "^5.16.8",
     "unplugin-auto-import": "^0.15.1",
     "unplugin-vue-components": "^0.24.1",
     "vite-plugin-css-injected-by-js": "^3.1.0",
