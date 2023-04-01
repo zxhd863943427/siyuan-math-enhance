@@ -123,9 +123,18 @@ function initStyle() {
 .ML__keyboard.is-visible{
     height: calc(var(--keyboard-height) + 10px);
 }
+.bigfnbutton {
+    margin-bottom: 3px;
+}
+.MLK__keycap {
+    margin-bottom: 3px;
+}
+.MLK__backdrop {
+    height: calc(var(--keyboard-height) + 10px);
+}
 `;
     document.body.appendChild(mathlive_css);
-    document.body.style.setProperty("--keycap-height", "3em");
+    // document.body.style.setProperty("--keycap-height", "3em");
     document.body.style.setProperty("--keycap-font-size", "1.2em");
 }
 
@@ -159,46 +168,46 @@ function initMathLiveRender(event: any) {
 
 function initVitrualKeyboard() {
     mathVirtualKeyboard.layouts[0].layers[0].markup =`
-<div class='MLK__rows'>
-  <ul>
-    <li class='MLK__keycap MLK__tex' data-variants='x-var'><i>x</i></li>
-    <li class='MLK__keycap MLK__tex' data-variants='n-var'><i>n</i></li>
-    <li class='separator w5'></li>
-    <row name='numpad-1'/>
-    <li class='separator w5'></li>
-    <li class='MLK__keycap MLK__tex' data-latex='\exponentialE' data-variants='ee'>e</li>
-    <li class='MLK__keycap MLK__tex' data-latex='\imaginaryI' data-variants='ii'>i</li>
-    <li class='MLK__keycap MLK__tex' data-latex='\pi' data-variants='numeric-pi'></li>
-  </ul>
-  <ul>
-    <li class='MLK__keycap MLK__tex' data-key='<' data-variants='<'>&lt;</li>
-    <li class='MLK__keycap MLK__tex' data-key='>' data-variants='>'>&gt;</li>
-    <li class='separator w5'></li>
-    <row name='numpad-2'/>
-    <li class='separator w5'></li>
-    <li class='MLK__keycap MLK__tex' data-latex='#@^{2}' data-latex='x^2'></li>
-    <li class='MLK__keycap MLK__tex' data-variants='^' data-insert='#@^{#?}' data-latex='x^\placeholder'></li>
-    <li class='MLK__keycap MLK__tex small' data-insert='\sqrt{#0}' data-latex='\sqrt{#0}'></li>
-  </ul>
-  <ul>
-    <li class='MLK__keycap MLK__tex' data-variants='(' >(</li>
-    <li class='MLK__keycap MLK__tex' data-variants=')' >)</li>
-    <li class='separator w5'></li>
-    <row name='numpad-3'/>
-    <li class='separator w5'></li>
-    <li class='MLK__keycap small' data-variants='int' data-latex='\int_0^\infty'></li>
-    <li class='MLK__keycap' data-latex='\forall' data-variants='logic' ></li>
-    <li class='action font-glyph bottom right' data-variants='delete' data-command='["performWithFeedback","deleteBackward"]'><svg class="svg-glyph"><use xlink:href="#svg-delete-backward" /></svg></li></ul>
-  </ul>
-  <ul>
-    <li class='MLK__keycap' data-variants='foreground-color' data-command='["applyStyle",{"color":"#6495ed"}]'><span style='color:#6495ed'>[...]</span></li>
-    <li class='MLK__keycap' data-variants='background-color' data-command='["applyStyle",{"backgroundColor":"yellow"}]'><span style='border-radius: 50%;width:22px;height:22px; background:#fff590; box-sizing: border-box'></span></li>
-    <li class='separator w5'></li>
-    <row name='numpad-4'/>
-    <li class='separator w5'></li>
-    <arrows/>
-  </ul>
-</div>
+    <div class='MLK__rows'>
+    <ul>
+      <li class='MLK__keycap MLK__tex' data-variants='x-var'><i>x</i></li>
+      <li class='MLK__keycap MLK__tex' data-variants='n-var'><i>n</i></li>
+      <li class='separator w5'></li>
+      <row name='numpad-1'/>
+      <li class='separator w5'></li>
+      <li class='MLK__keycap MLK__tex' data-latex='\\exponentialE' data-variants='ee'>e</li>
+      <li class='MLK__keycap MLK__tex' data-latex='\\imaginaryI' data-variants='ii'>i</li>
+      <li class='MLK__keycap MLK__tex' data-latex='\\pi' data-variants='numeric-pi'></li>
+    </ul>
+    <ul>
+      <li class='MLK__keycap MLK__tex' data-key='<' data-variants='<'>&lt;</li>
+      <li class='MLK__keycap MLK__tex' data-key='>' data-variants='>'>&gt;</li>
+      <li class='separator w5'></li>
+      <row name='numpad-2'/>
+      <li class='separator w5'></li>
+      <li class='MLK__keycap MLK__tex' data-latex='#@^{2}' data-latex='x^2'></li>
+      <li class='MLK__keycap MLK__tex' data-variants='^' data-insert='#@^{#?}' data-latex='x^\\placeholder'></li>
+      <li class='MLK__keycap MLK__tex small' data-insert='\\sqrt{#0}' data-latex='\\sqrt{#0}'></li>
+    </ul>
+    <ul>
+      <li class='MLK__keycap MLK__tex' data-variants='(' >(</li>
+      <li class='MLK__keycap MLK__tex' data-variants=')' >)</li>
+      <li class='separator w5'></li>
+      <row name='numpad-3'/>
+      <li class='separator w5'></li>
+      <li class='MLK__keycap small' data-variants='int' data-latex='\\int_0^\\infty'></li>
+      <li class='MLK__keycap' data-latex='\\forall' data-variants='logic' ></li>
+      <li class='action font-glyph bottom right' data-variants='delete' data-command='["performWithFeedback","deleteBackward"]'><svg class="svg-glyph"><use xlink:href="#svg-delete-backward" /></svg></li></ul>
+    </ul>
+    <ul>
+      <li class='MLK__keycap' data-variants='foreground-color' data-command='["applyStyle",{"color":"#6495ed"}]'><span style='color:#6495ed'>[...]</span></li>
+      <li class='MLK__keycap' data-variants='background-color' data-command='["applyStyle",{"backgroundColor":"yellow"}]'><span style='border-radius: 50%;width:22px;height:22px; background:#fff590; box-sizing: border-box'></span></li>
+      <li class='separator w5'></li>
+      <row name='numpad-4'/>
+      <li class='separator w5'></li>
+      <arrows/>
+    </ul>
+  </div>
     `
 }
 

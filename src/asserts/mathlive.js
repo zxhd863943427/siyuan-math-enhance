@@ -1,5 +1,5 @@
-/** MathLive 0.90.9 */
-(function(global,factory){typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) : typeof define === 'function' && define.amd ? define(['exports'],factory):(global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.MathLive = {}));})(this, (function (exports) { 'use strict';
+/** MathLive 0.90.11 */
+    (function(global,factory){typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) : typeof define === 'function' && define.amd ? define(['exports'],factory):(global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.MathLive = {}));})(this, (function (exports) { 'use strict';
 var MathLive = (() => {
   var __defProp = Object.defineProperty;
   var __defProps = Object.defineProperties;
@@ -22,6 +22,18 @@ var MathLive = (() => {
     return a;
   };
   var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
+  var __objRest = (source, exclude) => {
+    var target = {};
+    for (var prop in source)
+      if (__hasOwnProp.call(source, prop) && exclude.indexOf(prop) < 0)
+        target[prop] = source[prop];
+    if (source != null && __getOwnPropSymbols)
+      for (var prop of __getOwnPropSymbols(source)) {
+        if (exclude.indexOf(prop) < 0 && __propIsEnum.call(source, prop))
+          target[prop] = source[prop];
+      }
+    return target;
+  };
   var __export = (target, all) => {
     for (var name in all)
       __defProp(target, name, { get: all[name], enumerable: true });
@@ -4432,9 +4444,6 @@ M500 241 v40 H399408 v-40z M500 435 v40 H400000 v-40z`
       result.push(run);
     return result;
   }
-  function applyStyle(mode, box, style) {
-    return Mode.applyStyle(mode, box, style);
-  }
 
   // src/core/types.ts
   var BOX_TYPE = [
@@ -4523,7 +4532,7 @@ M500 241 v40 H399408 v-40z M500 435 v40 H400000 v-40z`
       let fontName = (options == null ? void 0 : options.fontFamily) || "Main-Regular";
       if ((options == null ? void 0 : options.style) && this.value) {
         fontName = // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-        applyStyle((_e = options.mode) != null ? _e : "math", this, options.style) || "Main-Regular";
+        Mode.applyStyle((_e = options.mode) != null ? _e : "math", this, options.style) || "Main-Regular";
       }
       this.height = 0;
       this.depth = 0;
@@ -15616,7 +15625,7 @@ M500 241 v40 H399408 v-40z M500 435 v40 H400000 v-40z`
           "root",
           "space"
         ].includes(type),
-        `MathLive 0.90.9: an unexpected atom type "${type}" was encountered. Add new atom constructors to \`fromJson()\` in "atom.ts"`
+        `MathLive 0.90.11: an unexpected atom type "${type}" was encountered. Add new atom constructors to \`fromJson()\` in "atom.ts"`
       );
       result = Atom.fromJson(json, context);
     }
@@ -18396,7 +18405,7 @@ M500 241 v40 H399408 v-40z M500 435 v40 H400000 v-40z`
             updates.defaultMode
           )) {
             console.error(
-              `MathLive 0.90.9:  valid values for defaultMode are "text", "math" or "inline-math"`
+              `MathLive 0.90.11:  valid values for defaultMode are "text", "math" or "inline-math"`
             );
             result.defaultMode = "math";
           } else
@@ -20396,7 +20405,7 @@ M500 241 v40 H399408 v-40z M500 435 v40 H400000 v-40z`
           result2 = SRE.toSpeech(mathML);
         } catch (e) {
           console.error(
-            `MathLive 0.90.9: \`SRE.toSpeech()\` runtime error`,
+            `MathLive 0.90.11: \`SRE.toSpeech()\` runtime error`,
             e
           );
         }
@@ -22630,16 +22639,6 @@ M500 241 v40 H399408 v-40z M500 435 v40 H400000 v-40z`
 }
 `;
 
-  // src/virtual-keyboard/mathfield-proxy.ts
-  function makeProxy(mf) {
-    return {
-      value: mf.model.getValue(),
-      selectionIsCollapsed: mf.model.selectionIsCollapsed,
-      canUndo: mf.canUndo(),
-      canRedo: mf.canRedo()
-    };
-  }
-
   // src/virtual-keyboard/proxy.ts
   var VIRTUAL_KEYBOARD_MESSAGE = "mathlive#virtual-keyboard-message";
   function isVirtualKeyboardMessage(evt) {
@@ -22853,6 +22852,7 @@ M500 241 v40 H399408 v-40z M500 435 v40 H400000 v-40z`
     --keyboard-toolbar-background: transparent;
     --keyboard-toolbar-background-hover: #eee;
     --keyboard-toolbar-background-selected: transparent;
+    --keyboard-horizontal-rule: 1px solid #fff;
     --keycap-background: white;
     --keycap-background-hover: #f5f5f7;
     --keycap-background-active: white;
@@ -22861,7 +22861,8 @@ M500 241 v40 H399408 v-40z M500 435 v40 H400000 v-40z`
     --keycap-text: #000;
     --keycap-text-active: #fff;
     --keycap-text-hover: #fff;
-    --keycap-secondary-text: #000;
+    --keycap-secondary-text: #333;
+    --keycap-shift-text: var(--keyboard-accent-color);
     --keycap-modifier-background: #b9bfc8;
     --keycap-modifier-background-hover: #a0a9b6;
     --keycap-modifier-text: #060707;
@@ -22873,11 +22874,27 @@ M500 241 v40 H399408 v-40z M500 435 v40 H400000 v-40z`
     --keycap-extra-small-font-size: calc(var(--keycap-font-size) / 1.42);
     --variant-panel-background: #fff;
     --variant-keycap-text: var(--keycap-text, #000);
-    --variant-keycap-text-active: #fff;
+    --variant-keycap-text-active: var(--keycap-text-active, #fff);
     --variant-keycap-background-active: var(--keyboard-accent-color);
     --variant-keycap-length: 70px;
     --variant-keycap-font-size: 30px;
     --variant-keycap-aside-font-size: 12px;
+  }
+  .if-can-undo,
+  .if-can-redo,
+  .if-can-copy,
+  .if-can-cut,
+  .if-can-paste {
+    opacity: 0.4;
+    pointer-events: none;
+  }
+  .can-undo .if-can-undo,
+  .can-redo .if-can-redo,
+  .can-copy .if-can-copy,
+  .can-cut .if-can-cut,
+  .can-paste .if-can-paste {
+    opacity: 1;
+    pointer-events: all;
   }
   body > .ML__keyboard {
     position: fixed;
@@ -23022,12 +23039,20 @@ M500 241 v40 H399408 v-40z M500 435 v40 H400000 v-40z`
     pointer-events: none;
   }
   .MLK__rows .horizontal-rule {
+    height: 6px;
+    margin-top: 3px;
+    margin-bottom: 0;
     width: 100%;
-    border-top: 1px solid var(--keycap-modifier-border-bottom);
+    border-radius: 0;
+    border-top: var(--keyboard-horizontal-rule);
   }
   .MLK__rows .ghost {
-    background: transparent;
+    background: var(--keyboard-toolbar-background);
     border: none;
+    color: var(--keyboard-toolbar-text);
+  }
+  .MLK__rows .ghost:hover {
+    background: var(--keyboard-toolbar-background-hover);
   }
   .MLK__rows .bigfnbutton {
     font-size: var(--keycap-extra-small-font-size, 14px);
@@ -23118,10 +23143,6 @@ M500 241 v40 H399408 v-40z M500 435 v40 H400000 v-40z`
     -webkit-user-select: none;
     user-select: none;
     -webkit-tap-highlight-color: transparent;
-  }
-  .MLK__rows li.horizontal-rule {
-    margin-top: 1px;
-    height: 3px;
   }
   .MLK__rows li:hover {
     background: var(--keycap-background-hover);
@@ -23295,7 +23316,7 @@ Note there are a different set of tooltip rules for the keyboard toggle
     justify-content: center;
     align-content: center;
     touch-action: none;
-    max-width: 286px;
+    max-width: 350px;
     background: var(--variant-panel-background);
     text-align: center;
     border-radius: 6px;
@@ -23313,7 +23334,7 @@ Note there are a different set of tooltip rules for the keyboard toggle
   }
   .MLK__variant-panel ul {
     list-style: none;
-    margin: 3px;
+    margin: 0;
     padding: 0;
     display: flex;
     flex-flow: row wrap-reverse;
@@ -23327,11 +23348,11 @@ Note there are a different set of tooltip rules for the keyboard toggle
     font-size: var(--variant-keycap-font-size);
     height: var(--variant-keycap-length);
     width: var(--variant-keycap-length);
-    box-sizing: border-box;
     margin: 0;
-    background: transparent;
-    border: 1px solid transparent;
+    box-sizing: border-box;
     border-radius: 5px;
+    border: 1px solid transparent;
+    background: transparent;
     pointer-events: all;
     cursor: pointer;
     color: var(--variant-keycap-text);
@@ -23339,9 +23360,8 @@ Note there are a different set of tooltip rules for the keyboard toggle
   }
   @media (max-height: 412px) {
     .MLK__variant-panel li {
-      font-size: 24px;
-      height: 50px;
-      width: 50px;
+      --variant-keycap-font-size: 24px;
+      --variant-keycap-length: 50px;
     }
   }
   .MLK__variant-panel li .ML__mathlive {
@@ -23356,14 +23376,22 @@ Note there are a different set of tooltip rules for the keyboard toggle
   .MLK__variant-panel li.small {
     font-size: var(--keycap-small-font-size, 16px);
   }
-  .MLK__variant-panel li.small-button {
-    width: 42px;
-    height: 42px;
-    margin: 2px;
+  .MLK__variant-panel li.swatch-button {
+    box-sizing: border-box;
     background: #fbfbfb;
   }
-  .MLK__variant-panel li.small-button:hover {
-    background: var(--variant-keycap-background-active);
+  .MLK__variant-panel li.swatch-button > span {
+    display: inline-block;
+    margin: 6px;
+    width: calc(100% - 12px);
+    height: calc(100% - 12px);
+    border-radius: 50%;
+  }
+  .MLK__variant-panel li.swatch-button:hover {
+    background: #f0f0f0;
+  }
+  .MLK__variant-panel li.swatch-button:hover > span {
+    border-radius: 2px;
   }
   .MLK__variant-panel li.box > div,
   .MLK__variant-panel li.box > span {
@@ -23395,11 +23423,15 @@ Note there are a different set of tooltip rules for the keyboard toggle
     opacity: 0.78;
     padding-top: 2px;
   }
+  @media (max-width: 414px) {
+    .MLK__variant-panel {
+      max-width: 350px;
+      --variant-keycap-font-size: 24px;
+      --variant-keycap-length: 50px;
+    }
+  }
   /* @xs breakpoint: iPhone 5 */
   @container (max-width: 414px) {
-    .MLK__variant-panel {
-      max-width: 320px;
-    }
     .MLK__toolbar > div > div {
       font-size: 100%;
       padding: 0;
@@ -23495,6 +23527,7 @@ Note there are a different set of tooltip rules for the keyboard toggle
       --keyboard-toolbar-background: transparent;
       --keyboard-toolbar-background-hover: #303030;
       --keyboard-toolbar-background-selected: transparent;
+      --keyboard-horizontal-rule: 1px solid #303030;
       --keycap-background: #1f2022;
       --keycap-background-hover: #2f3032;
       --keycap-background-active: #2f3032;
@@ -23523,6 +23556,7 @@ Note there are a different set of tooltip rules for the keyboard toggle
     --keyboard-toolbar-background: transparent;
     --keyboard-toolbar-background-hover: #303030;
     --keyboard-toolbar-background-selected: transparent;
+    --keyboard-horizontal-rule: border 1px solid #4d5154;
     --keycap-background: #1f2022;
     --keycap-background-hover: #2f3032;
     --keycap-background-active: #2f3032;
@@ -23557,7 +23591,7 @@ Note there are a different set of tooltip rules for the keyboard toggle
     --keycap-text: #000;
     --keycap-text-active: #fff;
     --keycap-text-hover: #fff;
-    --keycap-secondary-text: #000;
+    --keycap-secondary-text: #333;
     --keycap-modifier-background: #a0a9b6;
     --keycap-modifier-background-hover: #949ead;
     --keycap-modifier-text: #060707;
@@ -23573,8 +23607,6 @@ Note there are a different set of tooltip rules for the keyboard toggle
 
   // src/common/script-url.ts
   function getFileUrl() {
-    // 临时计策，test
-    return "127.0.0.1:6806"
     const stackTraceFrames = String(new Error().stack).replace(/^Error.*\n/, "").split("\n");
     if (stackTraceFrames.length === 0) {
       console.error(
@@ -23721,7 +23753,7 @@ Note there are a different set of tooltip rules for the keyboard toggle
         return;
       } catch (error) {
         console.error(
-          `MathLive 0.90.9: The math fonts could not be loaded from "${fontsFolder}"`,
+          `MathLive 0.90.11: The math fonts could not be loaded from "${fontsFolder}"`,
           { cause: error }
         );
         document.body.classList.add("ML__fonts-did-not-load");
@@ -23763,35 +23795,7 @@ Note there are a different set of tooltip rules for the keyboard toggle
       layers: ["symbols"]
     }
   };
-  var SHIFTED_KEYS = {
-    "\\varphi ": ["&Phi;", "\\Phi "],
-    "\\varsigma ": ["&Sigma;", "\\Sigma "],
-    "\\epsilon ": ["&#x0190;", '\\char"0190'],
-    "\\rho ": ["&#x3A1", '\\char"3A1'],
-    "\\tau ": ["&#x3A4;", '\\char"3A4'],
-    "\\upsilon ": ["&Upsilon;", "\\Upsilon "],
-    "\\theta ": ["&Theta;", "\\Theta "],
-    "\\iota ": ["&Iota;", '\\char"399'],
-    "\\omicron ": ["&#x039F;", '\\char"39F'],
-    "\\pi ": ["&Pi;", "\\Pi "],
-    "\\alpha ": ["&Alpha;", '\\char"391'],
-    "\\sigma ": ["&Sigma;", "\\Sigma "],
-    "\\delta ": ["&Delta;", "\\Delta "],
-    "\\phi ": ["&#x03a6;", "\\Phi "],
-    "\\gamma ": ["&Gamma;", "\\Gamma "],
-    "\\eta ": ["&Eta;", '\\char"397'],
-    "\\xi ": ["&Xi;", "\\Xi "],
-    "\\kappa ": ["&Kappa;", '\\char"39A'],
-    "\\lambda ": ["&Lambda;", "\\Lambda "],
-    "\\zeta ": ["&Zeta;", '\\char"396'],
-    "\\chi ": ["&Chi;", '\\char"3A7'],
-    "\\psi ": ["&Psi;", "\\Psi "],
-    "\\omega ": ["&Omega;", "\\Omega "],
-    "\\beta ": ["&Beta;", '\\char"392'],
-    "\\nu ": ["&Nu;", '\\char"39D'],
-    "\\mu ": ["&Mu;", '\\char"39C']
-  };
-  var LAYERS = {
+  var LAYERS_MARKUP = {
     "numeric": `
 <div class='MLK__rows'>
   <ul>
@@ -24224,16 +24228,17 @@ Note there are a different set of tooltip rules for the keyboard toggle
       "\\bullet"
     ],
     "0": ["\\varnothing", "\\infty"],
-    "1": ["\\frac{1}{#0}", "\\times 10^{#?}"],
-    "2": ["\\frac{1}{2}", "#@^2", "\\exponentialE"],
-    "3": ["\\frac{1}{3}", "#@^3", "\\pi"],
+    "1": ["\\frac{1}{#@}", "#@^{-1}", "\\times 10^{#?}", "\\phi", "\\imaginaryI"],
+    "2": ["\\frac{1}{2}", "#@^2", "\\sqrt2", "\\exponentialE"],
+    "3": ["\\frac{1}{3}", "#@^3", "\\sqrt3", "\\pi"],
     "4": ["\\frac{1}{4}", "#@^4"],
-    "5": ["\\frac{1}{5}", "#@^5"],
+    "5": ["\\frac{1}{5}", "#@^5", "\\sqrt5"],
     "6": ["\\frac{1}{6}", "#@^6"],
     "7": ["\\frac{1}{7}", "#@^7"],
     "8": ["\\frac{1}{8}", "#@^8"],
     "9": ["\\frac{1}{9}", "#@^9"],
-    ".": [
+    ".": [".", ",", ";", "\\colon"],
+    ".-extended": [
       ".",
       ",",
       ";",
@@ -24629,69 +24634,77 @@ Note there are a different set of tooltip rules for the keyboard toggle
     // @todo Tab: could turn on speech, visible keyboard...
     "->|": []
   };
-  function showVariantsPanel(element, variantsId) {
-    var _a3, _b3;
-    const variants = getVariants(variantsId);
+  var variantPanelController;
+  function showVariantsPanel(element, variantList, onClose) {
+    var _a3;
+    const variants = {};
+    let markup = "";
+    for (const variant of getVariants(variantList)) {
+      const keycap = expandKeycap(variant);
+      const id = Date.now().toString(36).slice(-2) + Math.floor(Math.random() * 1e5).toString(36);
+      variants[id] = keycap;
+      markup += `<li id=${id} class="MLK__keycap ${(_a3 = keycap.class) != null ? _a3 : ""}">${renderKeycap(keycap)}</li>`;
+    }
     const variantPanel = document.createElement("div");
     variantPanel.setAttribute("aria-hidden", "true");
     variantPanel.className = "ML__keyboard MLK__variant-panel";
-    if (variants.length >= 14) {
-      variantPanel.style.width = "236px";
-    } else if (variants.length >= 7) {
-      variantPanel.style.width = "286px";
-    } else if (variants.length === 4 || variants.length === 2) {
-      variantPanel.style.width = "146px";
-    } else if (variants.length === 1) {
-      variantPanel.style.width = "86px";
-    } else {
-      variantPanel.style.width = "146px";
-    }
     variantPanel.style.height = "auto";
-    let markup = "";
-    for (const variant of variants) {
-      markup += "<li";
-      if (typeof variant === "string") {
-        markup += ` data-latex="${variant.replace(
-          /"/g,
-          "&quot;"
-        )}"'>${latexToMarkup(variant)}</li>`;
-      } else {
-        if (variant.latex)
-          markup += ' data-latex="' + variant.latex.replace(/"/g, "&quot;") + '"';
-        if (variant.insert) {
-          markup += ' data-insert="' + variant.insert.replace(/"/g, "&quot;") + '"';
-        }
-        if (variant.command) {
-          markup += ` data-command='${(typeof variant.command === "string" ? '"' + variant.command + '"' : JSON.stringify(variant.command)).replace(/"/g, "&quot;")}'`;
-        }
-        if (variant.aside)
-          markup += ` data-aside="${variant.aside.replace(/"/g, "&quot;")}"`;
-        if (variant.class)
-          markup += ` data-classes="${variant.class}"`;
-        markup += ">";
-        markup += (_b3 = variant.label) != null ? _b3 : latexToMarkup((_a3 = variant.latex) != null ? _a3 : "");
-        markup += "</li>";
-      }
-    }
+    const l = Object.keys(variants).length;
+    let w = 5;
+    if (l === 1)
+      w = 1;
+    else if (l === 2 || l === 4)
+      w = 2;
+    else if (l === 3 || l === 5 || l === 6)
+      w = 3;
+    else if (l >= 7 && l < 14)
+      w = 4;
+    variantPanel.style.width = `calc(var(--variant-keycap-length) * ${w} + 12px)`;
     variantPanel.innerHTML = mathfield_element_default.createHTML(`<ul>${markup}</ul>`);
     const keyboard = VirtualKeyboard.singleton;
     if (!Scrim.scrim)
       Scrim.scrim = new Scrim();
     Scrim.scrim.open({ root: keyboard.container, child: variantPanel });
-    makeKeycap(
-      keyboard,
-      [...variantPanel.querySelectorAll("li")],
-      "performVariant"
+    variantPanelController == null ? void 0 : variantPanelController.abort();
+    variantPanelController = new AbortController();
+    variantPanel.addEventListener(
+      "pointerup",
+      (ev) => {
+        let target = parentKeycap(ev.target);
+        if (!target || !target.id || !variants[target.id])
+          return;
+        executeKeycapCommand(variants[target.id]);
+        hideVariantsPanel();
+        onClose == null ? void 0 : onClose();
+        ev.preventDefault();
+      },
+      { capture: true, signal: variantPanelController.signal }
+    );
+    window.addEventListener(
+      "pointercancel",
+      () => {
+        hideVariantsPanel();
+        onClose == null ? void 0 : onClose();
+      },
+      { signal: variantPanelController.signal }
+    );
+    window.addEventListener(
+      "pointerup",
+      (ev) => {
+        hideVariantsPanel();
+        onClose == null ? void 0 : onClose();
+      },
+      { signal: variantPanelController.signal }
     );
     const position = element == null ? void 0 : element.getBoundingClientRect();
     if (position) {
       if (position.top - variantPanel.clientHeight < 0) {
         variantPanel.style.width = "auto";
-        if (variants.length <= 6)
+        if (l <= 6)
           variantPanel.style.height = "56px";
-        else if (variants.length <= 12)
+        else if (l <= 12)
           variantPanel.style.height = "108px";
-        else if (variants.length <= 18)
+        else if (l <= 18)
           variantPanel.style.height = "205px";
         else
           variantPanel.classList.add("compact");
@@ -24711,13 +24724,7 @@ Note there are a different set of tooltip rules for the keyboard toggle
   }
   function hideVariantsPanel() {
     var _a3;
-    const variantPanel = document.querySelector(
-      ".MLK__variant-panel"
-    );
-    if (variantPanel) {
-      variantPanel.classList.remove("is-visible");
-      variantPanel.innerHTML = "";
-    }
+    variantPanelController == null ? void 0 : variantPanelController.abort();
     (_a3 = Scrim.scrim) == null ? void 0 : _a3.close();
     return false;
   }
@@ -24726,8 +24733,8 @@ Note there are a different set of tooltip rules for the keyboard toggle
       const result = [];
       for (const color of Object.keys(FOREGROUND_COLORS)) {
         result.push({
-          class: "small-button",
-          label: '<span style="border-radius:50%;width:32px;height:32px; box-sizing: border-box; border: 3px solid ' + FOREGROUND_COLORS[color] + '"></span>',
+          class: "swatch-button",
+          label: '<span style="border: 3px solid ' + FOREGROUND_COLORS[color] + '"></span>',
           command: ["applyStyle", { color }]
         });
       }
@@ -24737,8 +24744,8 @@ Note there are a different set of tooltip rules for the keyboard toggle
       const result = [];
       for (const color of Object.keys(BACKGROUND_COLORS)) {
         result.push({
-          class: "small-button",
-          label: '<span style="border-radius:50%;width:32px;height:32px; background:' + BACKGROUND_COLORS[color] + '"></span>',
+          class: "swatch-button",
+          label: '<span style="background:' + BACKGROUND_COLORS[color] + '"></span>',
           command: ["applyStyle", { backgroundColor: color }]
         });
       }
@@ -24748,12 +24755,11 @@ Note there are a different set of tooltip rules for the keyboard toggle
   }
   function getVariants(id) {
     var _a3;
+    if (typeof id !== "string")
+      return id;
     if (!gVariants[id])
       gVariants[id] = (_a3 = makeVariants(id)) != null ? _a3 : [];
     return gVariants[id];
-  }
-  function setVariants(id, value) {
-    gVariants[id] = value;
   }
 
   // src/virtual-keyboard/utils.ts
@@ -24790,7 +24796,7 @@ Note there are a different set of tooltip rules for the keyboard toggle
       return `${k} {${jsonToCssProps(json[k])}}`;
     }).join("");
   }
-  function latexToMarkup(latex, arg) {
+  function latexToMarkup2(latex, arg) {
     if (!latex)
       return "";
     latex = latex.replace(/(^|[^\\])#@/g, "$1#?");
@@ -24814,18 +24820,13 @@ Note there are a different set of tooltip rules for the keyboard toggle
     return makeStruts(box, { classes: "ML__mathlive" }).toMarkup();
   }
   function normalizeLayer(layer) {
+    var _a3;
     if (Array.isArray(layer))
       return layer.map((x) => normalizeLayer(x)).flat();
-    if (typeof layer === "string" && LAYERS[layer])
-      return normalizeLayer({ markup: LAYERS[layer], id: layer });
-    let result;
-    if (typeof layer === "string")
-      result = { markup: layer };
-    else
-      result = layer;
-    if (!result.id) {
-      result.id = "ML__layer_" + Date.now().toString(36).slice(-2) + Math.floor(Math.random() * 1e5).toString(36);
-    }
+    if (typeof layer === "string" && LAYERS_MARKUP[layer])
+      return normalizeLayer({ markup: LAYERS_MARKUP[layer], id: layer });
+    let result = typeof layer === "string" ? { markup: layer } : layer;
+    (_a3 = result.id) != null ? _a3 : result.id = "ML__layer_" + Date.now().toString(36).slice(-2) + Math.floor(Math.random() * 1e5).toString(36);
     return [result];
   }
   function normalizeLayout(layout) {
@@ -24834,7 +24835,7 @@ Note there are a different set of tooltip rules for the keyboard toggle
     if ("rows" in layout && Array.isArray(layout.rows)) {
       console.assert(
         !("layers" in layout),
-        `MathLive 0.90.9: only provide either a "rows" or "layers" property, not both`
+        `MathLive 0.90.11: only provide either a "rows" or "layers" property, not both`
       );
       let hasShift = false;
       let hasEdit = false;
@@ -24849,13 +24850,14 @@ Note there are a different set of tooltip rules for the keyboard toggle
         layout.displayShiftedKeycaps = hasShift;
       if (!("displayEditToolbar" in layout) || layout.displayEditToolbar === void 0)
         layout.displayEditToolbar = !hasEdit;
-      return __spreadProps(__spreadValues({}, layout), {
-        layers: normalizeLayer({ rows: layout.rows }),
-        rows: void 0
+      const _a3 = layout, { rows } = _a3, result2 = __objRest(_a3, ["rows"]);
+      return __spreadProps(__spreadValues({}, result2), {
+        layers: normalizeLayer({ rows: layout.rows })
       });
     }
     if ("markup" in layout && typeof layout.markup === "string") {
-      return __spreadProps(__spreadValues({}, layout), {
+      const _b3 = layout, { markup } = _b3, result2 = __objRest(_b3, ["markup"]);
+      return __spreadProps(__spreadValues({}, result2), {
         layers: normalizeLayer(layout.markup)
       });
     }
@@ -24889,7 +24891,7 @@ Note there are a different set of tooltip rules for the keyboard toggle
     markup += "</div>";
     return markup;
   }
-  function makeActionToolbar(options, mathfield) {
+  function makeEditToolbar(options, mathfield) {
     let result = "";
     const toolbarOptions = options.actionToolbar;
     if (toolbarOptions === "none")
@@ -24940,113 +24942,41 @@ Note there are a different set of tooltip rules for the keyboard toggle
     result += availableActions.map((action) => actionsMarkup[action]).join("");
     return result;
   }
-  function makeKeycap(keyboard, elementList, chainedCommand) {
-    var _a3, _b3;
-    for (const element of elementList) {
-      let html = element.innerHTML;
-      if (!html) {
-        if (element.getAttribute("data-label"))
-          html = element.getAttribute("data-label").replace(/&quot;/g, '"');
-        else if (element.getAttribute("data-latex")) {
-          html = latexToMarkup(
-            element.getAttribute("data-latex").replace(/&quot;/g, '"')
-          );
-        } else if (element.getAttribute("data-insert")) {
-          html = latexToMarkup(
-            element.getAttribute("data-insert").replace(/&quot;/g, '"')
-          );
-        }
-        if (element.getAttribute("data-aside")) {
-          html += `<aside>${element.getAttribute("data-aside").replace(/&quot;/g, '"')}</aside>`;
-        }
-        if (html)
-          element.innerHTML = MathfieldElement.createHTML(html);
+  function makeKeycaps2(elementList) {
+    for (const element of elementList)
+      makeKeycap(element);
+  }
+  function makeKeycap(element) {
+    const keycap = {};
+    if (!element.id) {
+      if (element.hasAttribute("data-label"))
+        keycap.label = element.dataset.label;
+      if (element.hasAttribute("data-latex"))
+        keycap.latex = element.dataset.latex;
+      if (element.hasAttribute("data-key"))
+        keycap.key = element.dataset.key;
+      if (element.hasAttribute("data-insert"))
+        keycap.insert = element.dataset.insert;
+      if (element.hasAttribute("data-variants"))
+        keycap.variants = element.dataset.variants;
+      if (element.hasAttribute("data-aside"))
+        keycap.aside = element.dataset.aside;
+      if (element.className)
+        keycap.class = element.className;
+      if (!keycap.label && !keycap.latex && !keycap.key && !keycap.insert) {
+        keycap.latex = element.innerText;
+        keycap.label = element.innerHTML;
       }
-      if (element.getAttribute("data-classes"))
-        element.classList.add(element.getAttribute("data-classes"));
-      const key = (_a3 = element.getAttribute("data-insert")) == null ? void 0 : _a3.replace(/&quot;/g, '"');
-      if (key && SHIFTED_KEYS[key]) {
-        element.dataset.shifted = SHIFTED_KEYS[key][0];
-        element.dataset.shiftedCommand = JSON.stringify([
-          "insertAndUnshiftKeyboardLayer",
-          SHIFTED_KEYS[key][1]
-        ]);
-      }
-      let selector = void 0;
-      const command = element.getAttribute("data-command");
-      if (command) {
-        if (/^[a-zA-Z]+$/.test(command))
-          selector = command;
-        else {
-          try {
-            selector = JSON.parse(command);
-          } catch (e) {
-          }
+      if (element.hasAttribute("data-command")) {
+        try {
+          keycap.command = JSON.parse(element.dataset.command);
+        } catch (e) {
         }
-      } else if (element.getAttribute("data-insert")) {
-        console.log(
-          "insert keycap",
-          element.getAttribute("data-insert"),
-          "with latex",
-          element.getAttribute("data-latex")
-        );
-        selector = [
-          "insert",
-          element.getAttribute("data-insert"),
-          {
-            focus: true,
-            feedback: true,
-            scrollIntoView: true,
-            mode: "math",
-            format: "latex",
-            resetStyle: true
-          }
-        ];
-      } else if (element.getAttribute("data-latex")) {
-        selector = [
-          "insert",
-          element.getAttribute("data-latex"),
-          {
-            focus: true,
-            feedback: true,
-            scrollIntoView: true,
-            mode: "math",
-            format: "latex",
-            resetStyle: true
-          }
-        ];
-      } else {
-        console.log("keycap fallback, key = ", element.getAttribute("data-key"));
-        selector = [
-          "typedText",
-          (_b3 = element.getAttribute("data-key")) != null ? _b3 : element.textContent,
-          { focus: true, feedback: true, simulateKeystroke: true }
-        ];
       }
-      if (selector) {
-        if (chainedCommand)
-          selector = [chainedCommand, selector];
-        let handlers = { default: selector };
-        const variantsId = element.getAttribute("data-variants");
-        if (variantsId) {
-          handlers = {
-            default: selector,
-            pressAndHold: ["showVariantsPanel", variantsId]
-          };
-        }
-        attachButtonHandlers(
-          element,
-          (command2) => {
-            if (Array.isArray(command2)) {
-              if (command2[0] === "showVariantsPanel")
-                return showVariantsPanel(element, variantsId);
-            }
-            return keyboard.executeCommand(command2);
-          },
-          handlers
-        );
-      }
+      element.id = VirtualKeyboard.singleton.registerKeycap(keycap);
     }
+    if (!element.innerHTML)
+      element.innerHTML = MathfieldElement.createHTML(renderKeycap(keycap));
   }
   function expandLayerMarkup(options, layer) {
     var _a3, _b3, _c2, _d2;
@@ -25156,7 +25086,7 @@ Note there are a different set of tooltip rules for the keyboard toggle
         keys = ROWS.qwerty[attributes.name];
       if (!keys) {
         console.error(
-          `MathLive 0.90.9: Unknown roman keyboard row:`,
+          `MathLive 0.90.11: Unknown roman keyboard row:`,
           attributes.name
         );
       } else {
@@ -25277,6 +25207,7 @@ Note there are a different set of tooltip rules for the keyboard toggle
 </svg>`;
   function makeKeyboardElement(keyboard) {
     var _a3;
+    keyboard.resetKeycapRegistry();
     injectStylesheets();
     const result = document.createElement("div");
     result.className = "ML__keyboard";
@@ -25289,6 +25220,7 @@ Note there are a different set of tooltip rules for the keyboard toggle
     backdrop.className = "MLK__backdrop";
     backdrop.appendChild(plate);
     result.appendChild(backdrop);
+    result.addEventListener("pointerdown", handlePointerDown);
     const toolbars = result.querySelectorAll(".ML__edit-toolbar");
     if (toolbars) {
       for (const toolbar of toolbars) {
@@ -25308,10 +25240,7 @@ Note there are a different set of tooltip rules for the keyboard toggle
     const keycaps = result.querySelectorAll(
       ".MLK__keycap, .action, .fnbutton, .bigfnbutton"
     );
-    for (const keycap of keycaps) {
-      keycap.id = "ML__k" + Date.now().toString(36).slice(-2) + Math.floor(Math.random() * 1e5).toString(36);
-    }
-    makeKeycap(keyboard, [...keycaps]);
+    makeKeycaps2(keycaps);
     const elementList = result.querySelectorAll(".layer-switch");
     for (const element of elementList) {
       if (element.classList.contains("shift")) {
@@ -25359,7 +25288,7 @@ Note there are a different set of tooltip rules for the keyboard toggle
       markup.push(
         expandLayerMarkup(
           keyboard,
-          markupLayer(layer, {
+          makeLayer(keyboard, layer, {
             displayShiftedKeycaps: layout.displayShiftedKeycaps
           })
         )
@@ -25368,8 +25297,8 @@ Note there are a different set of tooltip rules for the keyboard toggle
     }
     return markup.join("");
   }
-  function markupLayer(layer, options) {
-    var _a3, _b3, _c2;
+  function makeLayer(keyboard, layer, options) {
+    var _a3, _b3;
     if (typeof layer === "string")
       return layer;
     let layerMarkup = "";
@@ -25388,6 +25317,8 @@ Note there are a different set of tooltip rules for the keyboard toggle
         for (let keycap of row) {
           layerMarkup += `<li`;
           keycap = expandKeycap(keycap, options);
+          const keycapId = keyboard.registerKeycap(keycap);
+          layerMarkup += ` id="${keycapId}"`;
           let cls = (_a3 = keycap.class) != null ? _a3 : "";
           if (keycap.layer && !/layer-switch/.test(cls))
             cls += " layer-switch";
@@ -25397,41 +25328,9 @@ Note there are a different set of tooltip rules for the keyboard toggle
             cls += (_b3 = { 0: " w0", 0.5: " w5", 1.5: " w15", 2: " w20", 5: " w50" }[keycap.width]) != null ? _b3 : "";
           }
           layerMarkup += ` class="${cls || "MLK__keycap"}"`;
-          if (keycap.key)
-            layerMarkup += ` data-key="${keycap.key}"`;
           if (keycap.tooltip)
             layerMarkup += ` data-tooltip="${keycap.tooltip}"`;
-          if (keycap.command) {
-            if (typeof keycap.command === "string")
-              layerMarkup += ` data-command='"${keycap.command}"'`;
-            else {
-              layerMarkup += ` data-command='`;
-              layerMarkup += JSON.stringify(keycap.command);
-              layerMarkup += `'`;
-            }
-          }
-          if (keycap.insert)
-            layerMarkup += ` data-insert="${keycap.insert}"`;
-          if (keycap.latex)
-            layerMarkup += ` data-latex="${keycap.latex}"`;
-          if (keycap.aside)
-            layerMarkup += ` data-aside="${keycap.aside}"`;
-          if (keycap.variants) {
-            if (typeof keycap.variants !== "string") {
-              const keysetId = Date.now().toString(36).slice(-2) + Math.floor(Math.random() * 1e5).toString(36);
-              setVariants(keysetId, keycap.variants);
-              layerMarkup += ` data-variants="${keysetId}"`;
-            } else
-              layerMarkup += ` data-variants="${keycap.variants}"`;
-          }
-          if (keycap.shifted)
-            layerMarkup += ` data-shifted="${keycap.shifted}"`;
-          if (keycap.shiftedCommand)
-            layerMarkup += ` data-shifted-command="${keycap.shiftedCommand}"`;
-          if (keycap.layer)
-            layerMarkup += ` data-layer="${keycap.layer}"`;
-          layerMarkup += `>${// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-          keycap.label || latexToMarkup((_c2 = keycap.latex) != null ? _c2 : "")}</li>`;
+          layerMarkup += `>${renderKeycap(keycap)}</li>`;
         }
         layerMarkup += `</ul>`;
       }
@@ -25443,6 +25342,13 @@ Note there are a different set of tooltip rules for the keyboard toggle
     if (layer.backdrop)
       layerMarkup += "</div>";
     return layerMarkup;
+  }
+  function renderKeycap(keycap) {
+    var _a3;
+    let result = keycap.label ? keycap.label : (_a3 = latexToMarkup2(keycap.latex || keycap.insert || "") || keycap.key) != null ? _a3 : "";
+    if (keycap.aside)
+      result += `<aside>${keycap.aside}</aside>`;
+    return result;
   }
   var KEYCAP_SHORTCUTS = {
     "[left]": {
@@ -25504,18 +25410,18 @@ Note there are a different set of tooltip rules for the keyboard toggle
       variants: "delete"
     },
     "[undo]": {
-      class: "ghost",
+      class: "ghost if-can-undo",
       command: "undo",
       label: "<svg class=svg-glyph><use xlink:href=#svg-undo /></svg>",
       tooltip: localize("tooltip.undo")
     },
     "[redo]": {
-      class: "ghost",
+      class: "ghost  if-can-redo",
       command: "redo",
       label: "<svg class=svg-glyph><use xlink:href=#svg-redo /></svg>"
     },
-    "[(]": { variants: "(", latex: "(" },
-    "[)]": { variants: ")", latex: ")" },
+    "[(]": { variants: "(", latex: "(", label: "(" },
+    "[)]": { variants: ")", latex: ")", label: ")" },
     "[0]": { variants: "0", latex: "0", label: "0" },
     "[1]": { variants: "1", latex: "1", label: "1" },
     "[2]": { variants: "2", latex: "2", label: "2" },
@@ -25570,11 +25476,158 @@ Note there are a different set of tooltip rules for the keyboard toggle
     }
     return keycap;
   }
+  function handlePointerDown(ev) {
+    let target = parentKeycap(ev.target);
+    if (!target || !target.id)
+      return;
+    const keyboard = VirtualKeyboard.singleton;
+    const keycap = keyboard.getKeycap(target.id);
+    console.log(ev.type);
+    if (!keycap)
+      return;
+    console.assert(ev.type === "pointerdown");
+    const controller = new AbortController();
+    target.classList.add("is-pressed");
+    target.addEventListener(
+      "pointerenter",
+      handleVirtualKeyboardEvent(controller),
+      {
+        capture: true,
+        signal: controller.signal
+      }
+    );
+    target.addEventListener(
+      "pointerleave",
+      handleVirtualKeyboardEvent(controller),
+      {
+        capture: true,
+        signal: controller.signal
+      }
+    );
+    target.addEventListener(
+      "pointercancel",
+      handleVirtualKeyboardEvent(controller),
+      {
+        signal: controller.signal
+      }
+    );
+    target.addEventListener("pointerup", handleVirtualKeyboardEvent(controller), {
+      signal: controller.signal
+    });
+    if (keycap.variants) {
+      let pressAndHoldTimer;
+      if (pressAndHoldTimer)
+        clearTimeout(pressAndHoldTimer);
+      pressAndHoldTimer = setTimeout(() => {
+        if (target.classList.contains("is-pressed")) {
+          target.classList.remove("is-pressed");
+          target.classList.add("is-active");
+          showVariantsPanel(target, keycap.variants, () => {
+            controller.abort();
+            target == null ? void 0 : target.classList.remove("is-active");
+          });
+        }
+      }, 200);
+    }
+    ev.preventDefault();
+    return;
+  }
+  function handleVirtualKeyboardEvent(controller) {
+    return (ev) => {
+      let target = parentKeycap(ev.target);
+      if (!target || !target.id)
+        return;
+      const keyboard = VirtualKeyboard.singleton;
+      const keycap = keyboard.getKeycap(target.id);
+      console.log(ev.type);
+      if (!keycap)
+        return;
+      if (ev.type === "pointerenter") {
+        const pev = ev;
+        if (pev.isPrimary)
+          target.classList.add("is-pressed");
+      }
+      if (ev.type === "pointercancel") {
+        target.classList.remove("is-pressed");
+        controller.abort();
+        return;
+      }
+      if (ev.type === "pointerleave") {
+        target.classList.remove("is-pressed");
+        return;
+      }
+      if (ev.type === "pointerup") {
+        if (target.classList.contains("is-pressed")) {
+          target.classList.remove("is-pressed");
+          target.classList.add("is-active");
+          setTimeout(() => target == null ? void 0 : target.classList.remove("is-active"), 150);
+          executeKeycapCommand(keycap);
+        }
+        controller.abort();
+        ev.preventDefault();
+        return;
+      }
+    };
+  }
+  function executeKeycapCommand(keycap) {
+    let command = keycap.command;
+    if (!command && keycap.insert) {
+      command = [
+        "insert",
+        keycap.insert,
+        {
+          focus: true,
+          feedback: true,
+          scrollIntoView: true,
+          mode: "math",
+          format: "latex",
+          resetStyle: true
+        }
+      ];
+    }
+    if (!command && keycap.latex) {
+      command = [
+        "insert",
+        keycap.latex,
+        {
+          focus: true,
+          feedback: true,
+          scrollIntoView: true,
+          mode: "math",
+          format: "latex",
+          resetStyle: true
+        }
+      ];
+    }
+    if (!command) {
+      command = [
+        "typedText",
+        keycap.key || keycap.label,
+        { focus: true, feedback: true, simulateKeystroke: true }
+      ];
+    }
+    VirtualKeyboard.singleton.executeCommand(command);
+  }
+  function isKeycapElement(el) {
+    if (el.nodeType !== 1)
+      return false;
+    const classes = el.classList;
+    return classes.contains("MLK__keycap") || classes.contains("action") || classes.contains("fnbutton") || classes.contains("bigfnbutton");
+  }
+  function parentKeycap(el) {
+    if (!el || !(el instanceof Node))
+      return void 0;
+    let node = el;
+    while (node && !isKeycapElement(node))
+      node = node.parentNode;
+    return node != null ? node : void 0;
+  }
 
   // src/virtual-keyboard/virtual-keyboard.ts
   var VirtualKeyboard = class {
     constructor() {
       this.originalContainerBottomPadding = null;
+      this.keycapRegistry = {};
       var _a3, _b3, _c2;
       this.targetOrigin = window.origin;
       this.originValidator = "none";
@@ -25626,6 +25679,17 @@ Note there are a different set of tooltip rules for the keyboard toggle
             this.hide();
         }, 300);
       });
+    }
+    resetKeycapRegistry() {
+      this.keycapRegistry = {};
+    }
+    registerKeycap(keycap) {
+      const id = "ML__k" + Date.now().toString(36).slice(-2) + Math.floor(Math.random() * 1e5).toString(36);
+      this.keycapRegistry[id] = keycap;
+      return id;
+    }
+    getKeycap(id) {
+      return this.keycapRegistry[id];
     }
     get alphabeticLayout() {
       return this._alphabeticLayout;
@@ -25928,12 +25992,19 @@ Note there are a different set of tooltip rules for the keyboard toggle
       this.sendMessage("blur");
     }
     updateToolbar(mf) {
-      var _a3;
-      const toolbars = (_a3 = this._element) == null ? void 0 : _a3.querySelectorAll(".ML__edit-toolbar");
+      const el = this._element;
+      if (!el)
+        return;
+      el.classList.toggle("can-undo", mf.canUndo);
+      el.classList.toggle("can-redo", mf.canRedo);
+      el.classList.toggle("can-copy", !mf.selectionIsCollapsed);
+      el.classList.toggle("can-copy", !mf.selectionIsCollapsed);
+      el.classList.toggle("can-paste", true);
+      const toolbars = el.querySelectorAll(".ML__edit-toolbar");
       if (!toolbars)
         return;
       for (const toolbar of toolbars)
-        toolbar.innerHTML = makeActionToolbar(this, mf);
+        toolbar.innerHTML = makeEditToolbar(this, mf);
     }
     connect() {
       this.connectedMathfieldWindow = window;
@@ -25977,6 +26048,16 @@ Note there are a different set of tooltip rules for the keyboard toggle
         get: () => VirtualKeyboardProxy.singleton
       });
     }
+  }
+
+  // src/virtual-keyboard/mathfield-proxy.ts
+  function makeProxy(mf) {
+    return {
+      value: mf.model.getValue(),
+      selectionIsCollapsed: mf.model.selectionIsCollapsed,
+      canUndo: mf.canUndo(),
+      canRedo: mf.canRedo()
+    };
   }
 
   // src/editor-model/listeners.ts
@@ -26248,7 +26329,7 @@ Note there are a different set of tooltip rules for the keyboard toggle
   var POPOVER_STYLESHEET_HASH = void 0;
   var gPopoverStylesheet = null;
   var gCoreStylesheet2 = null;
-  function latexToMarkup2(mf, latex) {
+  function latexToMarkup3(mf, latex) {
     const root = new Atom("root", mf);
     root.body = parseLatex(latex, mf, { parseMode: "math" });
     const context = new Context(
@@ -26273,7 +26354,7 @@ Note there are a different set of tooltip rules for the keyboard toggle
     let template = "<ul>";
     for (const suggestion of suggestions) {
       const command = suggestion;
-      const commandMarkup = latexToMarkup2(mf, suggestion);
+      const commandMarkup = latexToMarkup3(mf, suggestion);
       const keybinding = getKeybindingsForCommand(mf.keybindings, command).join(
         "<br>"
       );
@@ -26828,7 +26909,7 @@ Note there are a different set of tooltip rules for the keyboard toggle
     } else if (window.MathfieldElement.speechEngine === "amazon") {
       if (!("AWS" in window)) {
         console.error(
-          `MathLive 0.90.9: AWS SDK not loaded. See https://www.npmjs.com/package/aws-sdk`
+          `MathLive 0.90.11: AWS SDK not loaded. See https://www.npmjs.com/package/aws-sdk`
         );
       } else {
         const polly = new window.AWS.Polly({ apiVersion: "2016-06-10" });
@@ -26856,7 +26937,7 @@ Note there are a different set of tooltip rules for the keyboard toggle
         polly.synthesizeSpeech(parameters, (err, data) => {
           if (err) {
             console.trace(
-              `MathLive 0.90.9: \`polly.synthesizeSpeech()\` error: ${err}`
+              `MathLive 0.90.11: \`polly.synthesizeSpeech()\` error: ${err}`
             );
           } else if (data == null ? void 0 : data.AudioStream) {
             const uInt8Array = new Uint8Array(data.AudioStream);
@@ -26870,7 +26951,7 @@ Note there are a different set of tooltip rules for the keyboard toggle
       }
     } else if (window.MathfieldElement.speechEngine === "google") {
       console.error(
-        `MathLive 0.90.9: The Google speech engine is not supported yet. Please come again.`
+        `MathLive 0.90.11: The Google speech engine is not supported yet. Please come again.`
       );
     }
   }
@@ -27277,7 +27358,7 @@ Note there are a different set of tooltip rules for the keyboard toggle
       }
       if (format === "ascii-math")
         return atomToAsciiMath(atom);
-      console.error(`MathLive 0.90.9: Unknown format "${format}`);
+      console.error(`MathLive 0.90.11: Unknown format "${format}`);
       return "";
     }
     getValue(arg1, arg2, arg3) {
@@ -27870,12 +27951,8 @@ Note there are a different set of tooltip rules for the keyboard toggle
       const lastSelected = result[result.length - 1];
       if (firstSelected === firstChild && lastSelected === lastChild) {
         const parent = result[0].parent;
-        if (parent.type !== "root" && parent.type !== "prompt") {
-          range2 = [
-            model.offsetOf(parent.leftSibling),
-            model.offsetOf(parent.rightSibling)
-          ];
-        }
+        if (parent.type !== "root" && parent.type !== "prompt")
+          range2 = [model.offsetOf(parent.leftSibling), model.offsetOf(parent)];
       }
       if (result.length === 1 && result[0].type === "placeholder" && result[0].parent.type === "genfrac") {
         const genfrac = result[0].parent;
@@ -27959,7 +28036,7 @@ Note there are a different set of tooltip rules for the keyboard toggle
       }
     }
   }
-  function applyStyle2(model, range2, style, options) {
+  function applyStyle(model, range2, style, options) {
     function everyStyle(property, value) {
       for (const atom of atoms)
         if (atom.style[property] !== value)
@@ -29576,7 +29653,7 @@ Note there are a different set of tooltip rules for the keyboard toggle
         }
         return result;
       }
-      if (!selector && mathfield.mode === "math") {
+      if ((!selector || keystroke === "[Space]") && mathfield.mode === "math") {
         if (keystroke === "[Space]") {
           mathfield.adoptStyle = "none";
           mathfield.flushInlineShortcutBuffer();
@@ -29871,7 +29948,7 @@ Note there are a different set of tooltip rules for the keyboard toggle
   );
 
   // src/editor-mathfield/styling.ts
-  function applyStyle3(mathfield, inStyle) {
+  function applyStyle2(mathfield, inStyle) {
     mathfield.flushInlineShortcutBuffer();
     const style = validateStyle(mathfield, inStyle);
     const { model } = mathfield;
@@ -29892,7 +29969,7 @@ Note there are a different set of tooltip rules for the keyboard toggle
         { content: true, type: "insertText" },
         () => {
           model.selection.ranges.forEach(
-            (range2) => applyStyle2(model, range2, style, { operation: "toggle" })
+            (range2) => applyStyle(model, range2, style, { operation: "toggle" })
           );
           mathfield.snapshot();
         }
@@ -29900,7 +29977,7 @@ Note there are a different set of tooltip rules for the keyboard toggle
     }
     return true;
   }
-  register2({ applyStyle: applyStyle3 }, { target: "mathfield" });
+  register2({ applyStyle: applyStyle2 }, { target: "mathfield" });
   function validateStyle(mathfield, style) {
     var _a3, _b3, _c2, _d2, _e, _f;
     const result = {};
@@ -30539,7 +30616,7 @@ Note there are a different set of tooltip rules for the keyboard toggle
       );
       if (!this.element.children) {
         console.error(
-          `%cMathLive 0.90.9: Something went wrong and the mathfield could not be created.%c
+          `%cMathLive 0.90.11: Something went wrong and the mathfield could not be created.%c
 If you are using Vue, this may be because you are using the runtime-only build of Vue. Make sure to include \`runtimeCompiler: true\` in your Vue configuration. There may a warning from Vue in the log above.`,
           "color:red;font-family:system-ui;font-size:1.2rem;font-weight:bold",
           "color:inherit;font-family:system-ui;font-size:inherit;font-weight:inherit"
@@ -30768,7 +30845,7 @@ If you are using Vue, this may be because you are using the runtime-only build o
         this._keybindings = keybindings;
         if (errors.length > 0) {
           console.error(
-            `MathLive 0.90.9: Invalid keybindings for current keyboard layout`,
+            `MathLive 0.90.11: Invalid keybindings for current keyboard layout`,
             errors
           );
         }
@@ -30943,7 +31020,7 @@ If you are using Vue, this may be because you are using the runtime-only build o
       const ce = window.MathfieldElement.computeEngine;
       if (!ce) {
         console.error(
-          `MathLive 0.90.9:  no compute engine available. Make sure the Compute Engine library is loaded.`
+          `MathLive 0.90.11:  no compute engine available. Make sure the Compute Engine library is loaded.`
         );
         return null;
       }
@@ -31018,7 +31095,7 @@ If you are using Vue, this may be because you are using the runtime-only build o
       if (options.focus)
         this.focus();
       if (options.feedback) {
-        if (MathfieldElement.keypressVibration && canVibrate())
+        if (window.MathfieldElement.keypressVibration && canVibrate())
           navigator.vibrate(HAPTIC_FEEDBACK_DURATION);
         window.MathfieldElement.playSound("keypress");
       }
@@ -31162,9 +31239,9 @@ If you are using Vue, this may be because you are using the runtime-only build o
         () => {
           if (options.range === void 0) {
             for (const range2 of this.model.selection.ranges)
-              applyStyle2(this.model, range2, style, { operation });
+              applyStyle(this.model, range2, style, { operation });
           } else
-            applyStyle2(this.model, options.range, style, { operation });
+            applyStyle(this.model, options.range, style, { operation });
         }
       );
       requestUpdate(this);
@@ -31189,14 +31266,14 @@ If you are using Vue, this may be because you are using the runtime-only build o
       );
       console.assert(
         prompt !== void 0,
-        `MathLive 0.90.9:  no prompts with matching ID found`
+        `MathLive 0.90.11:  no prompts with matching ID found`
       );
       return prompt;
     }
     getPromptValue(id, format) {
       const prompt = this.getPrompt(id);
       if (!prompt) {
-        console.error(`MathLive 0.90.9: unknown prompt ${id}`);
+        console.error(`MathLive 0.90.11: unknown prompt ${id}`);
         return "";
       }
       const first = this.model.offsetOf(prompt.firstChild);
@@ -31224,7 +31301,7 @@ If you are using Vue, this may be because you are using the runtime-only build o
       if (value !== void 0) {
         const prompt = this.getPrompt(id);
         if (!prompt) {
-          console.error(`MathLive 0.90.9: unknown prompt ${id}`);
+          console.error(`MathLive 0.90.11: unknown prompt ${id}`);
           return;
         }
         const branchRange = this.model.getBranchRange(
@@ -31243,7 +31320,7 @@ If you are using Vue, this may be because you are using the runtime-only build o
     setPromptState(id, state, locked) {
       const prompt = this.getPrompt(id);
       if (!prompt) {
-        console.error(`MathLive 0.90.9: unknown prompt ${id}`);
+        console.error(`MathLive 0.90.11: unknown prompt ${id}`);
         return;
       }
       if (state === "undefined")
@@ -31259,7 +31336,7 @@ If you are using Vue, this may be because you are using the runtime-only build o
     getPromptState(id) {
       const prompt = this.getPrompt(id);
       if (!prompt) {
-        console.error(`MathLive 0.90.9: unknown prompt ${id}`);
+        console.error(`MathLive 0.90.11: unknown prompt ${id}`);
         return [void 0, true];
       }
       return [prompt.correctness, prompt.locked];
@@ -31721,13 +31798,12 @@ If you are using Vue, this may be because you are using the runtime-only build o
     return search[i - 1];
   }
   function moveToClosestAtomVertically(model, fromAtom, toAtoms, extend, direction) {
-    const editableAtoms = toAtoms.filter(
-      (a) => !model.mathfield.hasEditableContent || a.type === "prompt" && !a.captureSelection
-    );
+    const hasEditablePrompts = model.mathfield.hasEditablePrompts;
+    const editableAtoms = !hasEditablePrompts ? toAtoms : toAtoms.filter((a) => a.type === "prompt" && !a.captureSelection);
     const fromX = getLocalDOMRect(model.mathfield.getHTMLElement(fromAtom)).right;
     const targetSelection = model.offsetOf(
       getClosestAtomToXPosition(model.mathfield, editableAtoms, fromX)
-    ) - (model.mathfield.hasEditableContent ? 1 : 0);
+    ) - (hasEditablePrompts ? 1 : 0);
     if (extend) {
       const [left, right] = model.selection.ranges[0];
       let newSelection;
@@ -31783,7 +31859,7 @@ If you are using Vue, this may be because you are using the runtime-only build o
       const cellHasPrompt = aboveCell.some(
         (a) => a.type === "prompt" && !a.captureSelection
       );
-      if (!cellHasPrompt && model.mathfield.hasEditableContent)
+      if (!cellHasPrompt && model.mathfield.hasEditablePrompts)
         return handleDeadEnd();
       moveToClosestAtomVertically(model, baseAtom, aboveCell, extend, "up");
     } else if (atom) {
@@ -31791,7 +31867,7 @@ If you are using Vue, this may be because you are using the runtime-only build o
       const branchHasPrompt = branch.some(
         (a) => a.type === "prompt" && a.placeholderId
       );
-      if (!branchHasPrompt && model.mathfield.hasEditableContent)
+      if (!branchHasPrompt && model.mathfield.hasEditablePrompts)
         return handleDeadEnd();
       moveToClosestAtomVertically(model, baseAtom, branch, extend, "up");
     } else
@@ -31832,13 +31908,13 @@ If you are using Vue, this may be because you are using the runtime-only build o
       const cellHasPrompt = belowCell.some(
         (a) => a.type === "prompt" && !a.captureSelection
       );
-      if (!cellHasPrompt && model.mathfield.hasEditableContent)
+      if (!cellHasPrompt && model.mathfield.hasEditablePrompts)
         return handleDeadEnd();
       moveToClosestAtomVertically(model, baseAtom, belowCell, extend, "down");
     } else if (atom) {
       const branch = (_b3 = atom.parent.branch("below")) != null ? _b3 : atom.parent.createBranch("below");
       const branchHasPrompt = branch.some((a) => a.type === "prompt");
-      if (!branchHasPrompt && model.mathfield.hasEditableContent)
+      if (!branchHasPrompt && model.mathfield.hasEditablePrompts)
         return handleDeadEnd();
       moveToClosestAtomVertically(model, baseAtom, branch, extend, "down");
     } else
@@ -31915,7 +31991,7 @@ If you are using Vue, this may be because you are using the runtime-only build o
       return;
     if (window.MathfieldElement.speechEngine !== "amazon") {
       console.error(
-        `MathLive 0.90.9: Use Amazon TTS Engine for synchronized highlighting`
+        `MathLive 0.90.11: Use Amazon TTS Engine for synchronized highlighting`
       );
       if (typeof window.MathfieldElement.speakHook === "function")
         window.MathfieldElement.speakHook(text);
@@ -31923,7 +31999,7 @@ If you are using Vue, this may be because you are using the runtime-only build o
     }
     if (!window.AWS) {
       console.error(
-        `MathLive 0.90.9: AWS SDK not loaded. See https://www.npmjs.com/package/aws-sdk`
+        `MathLive 0.90.11: AWS SDK not loaded. See https://www.npmjs.com/package/aws-sdk`
       );
       return;
     }
@@ -31941,7 +32017,7 @@ If you are using Vue, this may be because you are using the runtime-only build o
     polly.synthesizeSpeech(parameters, (err, data) => {
       if (err) {
         console.trace(
-          `MathLive 0.90.9: \`polly.synthesizeSpeech()\` error: ${err}`
+          `MathLive 0.90.11: \`polly.synthesizeSpeech()\` error: ${err}`
         );
         return;
       }
@@ -31963,7 +32039,7 @@ If you are using Vue, this may be because you are using the runtime-only build o
       polly.synthesizeSpeech(parameters, (err2, data2) => {
         if (err2) {
           console.trace(
-            `MathLive 0.90.9: \`polly.synthesizeSpeech("${text}") error:${err2}`
+            `MathLive 0.90.11: \`polly.synthesizeSpeech("${text}") error:${err2}`
           );
           return;
         }
@@ -32033,7 +32109,7 @@ If you are using Vue, this may be because you are using the runtime-only build o
   // src/public/mathfield-element.ts
   if (!isBrowser()) {
     console.error(
-      `MathLive 0.90.9: this version of the MathLive library is for use in the browser. A subset of the API is available on the server side in the "mathlive-ssr" library. If using server side rendering (with React for example) you may want to do a dynamic import of the MathLive library inside a \`useEffect()\` call.`
+      `MathLive 0.90.11: this version of the MathLive library is for use in the browser. A subset of the API is available on the server side in the "mathlive-ssr" library. If using server side rendering (with React for example) you may want to do a dynamic import of the MathLive library inside a \`useEffect()\` call.`
     );
   }
   var MATHFIELD_TEMPLATE = isBrowser() ? document.createElement("template") : null;
@@ -32148,7 +32224,7 @@ If you are using Vue, this may be because you are using the runtime-only build o
         }
         if (warnings.length > 0) {
           console.group(
-            `%cMathLive 0.90.9: %cInvalid Options`,
+            `%cMathLive 0.90.11: %cInvalid Options`,
             "color:#12b; font-size: 1.1rem",
             "color:#db1111; font-size: 1.1rem"
           );
@@ -32502,7 +32578,7 @@ If you are using Vue, this may be because you are using the runtime-only build o
           this._computeEngine = new ComputeEngineCtor();
         else {
           console.error(
-            `MathLive 0.90.9: The CortexJS Compute Engine library is not available.
+            `MathLive 0.90.11: The CortexJS Compute Engine library is not available.
           
           Load the library, for example with:
           
@@ -32639,7 +32715,7 @@ If you are using Vue, this may be because you are using the runtime-only build o
         return void 0;
       if (!window[Symbol.for("io.cortexjs.compute-engine")]) {
         console.error(
-          `MathLive 0.90.9: The CortexJS Compute Engine library is not available.
+          `MathLive 0.90.11: The CortexJS Compute Engine library is not available.
         
         Load the library, for example with:
         
@@ -32657,7 +32733,7 @@ If you are using Vue, this may be because you are using the runtime-only build o
         this._mathfield.setValue(latex);
       if (!window[Symbol.for("io.cortexjs.compute-engine")]) {
         console.error(
-          `MathLive 0.90.9: The CortexJS Compute Engine library is not available.
+          `MathLive 0.90.11: The CortexJS Compute Engine library is not available.
         
         Load the library, for example with:
         
@@ -32681,7 +32757,7 @@ If you are using Vue, this may be because you are using the runtime-only build o
     }
     getOptions(keys) {
       console.warn(
-        `%cMathLive 0.90.9: %cDeprecated Usage%c
+        `%cMathLive 0.90.11: %cDeprecated Usage%c
       \`mf.getOptions()\` is deprecated. Read the property directly on the mathfield instead.
       See https://cortexjs.io/mathlive/changelog/ for details.`,
         "color:#12b; font-size: 1.1rem",
@@ -32728,7 +32804,7 @@ If you are using Vue, this may be because you are using the runtime-only build o
      */
     getOption(key) {
       console.warn(
-        `%cMathLive 0.90.9: %cDeprecated Usage%c
+        `%cMathLive 0.90.11: %cDeprecated Usage%c
       \`mf.getOption()\` is deprecated. Read the property directly on the mathfield instead.
       See https://cortexjs.io/mathlive/changelog/ for details.`,
         "color:#12b; font-size: 1.1rem",
@@ -32766,7 +32842,7 @@ If you are using Vue, this may be because you are using the runtime-only build o
      */
     setOptions(options) {
       console.group(
-        `%cMathLive 0.90.9: %cDeprecated Usage`,
+        `%cMathLive 0.90.11: %cDeprecated Usage`,
         "color:#12b; font-size: 1.1rem",
         "color:#db1111; font-size: 1.1rem"
       );
@@ -33438,7 +33514,7 @@ If you are using Vue, this may be because you are using the runtime-only build o
     }
   };
   var MathfieldElement = _MathfieldElement;
-  MathfieldElement.version = "0.90.9";
+  MathfieldElement.version = "0.90.11";
   MathfieldElement._fontsDirectory = "./fonts";
   MathfieldElement._soundsDirectory = "./sounds";
   /**
@@ -33537,7 +33613,7 @@ If you are using Vue, this may be because you are using the runtime-only build o
   if (isBrowser() && !((_a2 = window.customElements) == null ? void 0 : _a2.get("math-field"))) {
     (_c = window[_b2 = Symbol.for("io.cortexjs.mathlive")]) != null ? _c : window[_b2] = {};
     const global = window[Symbol.for("io.cortexjs.mathlive")];
-    global.version = "0.90.9";
+    global.version = "0.90.11";
     window.MathfieldElement = MathfieldElement;
     (_d = window.customElements) == null ? void 0 : _d.define("math-field", MathfieldElement);
   }
@@ -33601,7 +33677,7 @@ If you are using Vue, this may be because you are using the runtime-only build o
         gComputeEngine = new ComputeEngineCtor();
       else {
         console.error(
-          `MathLive 0.90.9: The CortexJS Compute Engine library is not available.
+          `MathLive 0.90.11: The CortexJS Compute Engine library is not available.
         
         Load the library, for example with:
         
@@ -33751,7 +33827,7 @@ If you are using Vue, this may be because you are using the runtime-only build o
       span.innerHTML = window.MathfieldElement.createHTML(html);
     } catch (error) {
       console.error(
-        `MathLive 0.90.9:  Could not convert "${latex}"' to MathML with ${error}`
+        `MathLive 0.90.11:  Could not convert "${latex}"' to MathML with ${error}`
       );
       span.textContent = latex;
     }
@@ -35187,7 +35263,7 @@ If you are using Vue, this may be because you are using the runtime-only build o
   }
   function makeSharedVirtualKeyboard() {
     console.warn(
-      `%cMathLive 0.90.9: %cmakeSharedVirtualKeyboard() is deprecated. 
+      `%cMathLive 0.90.11: %cmakeSharedVirtualKeyboard() is deprecated. 
     Use \`window.mathVirtualKeyboard\` to access the virtual keyboard instance.
     See https://cortexjs.io/mathlive/changelog/ for details.`,
       "color:#12b; font-size: 1.1rem",
@@ -35220,7 +35296,7 @@ If you are using Vue, this may be because you are using the runtime-only build o
     autoRenderMathInElement(el, optionsPrivate);
   }
   var version3 = {
-    mathlive: "0.90.9"
+    mathlive: "0.90.11"
   };
   var debug = {
     FUNCTIONS: debug_default.FUNCTIONS,
