@@ -25615,7 +25615,7 @@ Note there are a different set of tooltip rules for the keyboard toggle
     return classes.contains("MLK__keycap") || classes.contains("action") || classes.contains("fnbutton") || classes.contains("bigfnbutton");
   }
   function parentKeycap(el) {
-    if (!el || !(el instanceof Node))
+    if (!el || !(el instanceof globalThis.Node))
       return void 0;
     let node = el;
     while (node && !isKeycapElement(node))
