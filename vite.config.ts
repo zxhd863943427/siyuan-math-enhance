@@ -13,6 +13,9 @@ var debugMode:any = false;
 
 // https://vitejs.dev/config/
 export default defineConfig({
+    define: { 'process.env': {
+        NODE_ENV:debugMode === true ? "development" : "production"} 
+    },
     plugins: [
         vue(),
         AutoImport({
