@@ -93,8 +93,15 @@ function addMathLiveListener(latexBlock:HTMLTextAreaElement,MathLiveBlock:any){
 function initMathLiveBlock(latexBlock:HTMLTextAreaElement):HTMLTextAreaElement{
 
     var mathLiveBlock:any = document.createElement("math-field")
-    mathLiveBlock.style.width = "-webkit-fill-available"
-    mathLiveBlock.style.fontSize = "1.25em";
+    // 初始化样式
+    mathLiveBlock.style.cssText = `
+    width: -webkit-fill-available; 
+    font-size: 1.25em; 
+    color: var(--b3-protyle-inline-strong-color); 
+    background-color: var(--b3-theme-background);
+    `
+    // mathLiveBlock.style.fontSize = "1.25em";
+    
     mathLiveBlock.value = latexBlock.value;
     mathLiveBlock.macros = {
         ...mathLiveBlock.macros,
@@ -104,6 +111,10 @@ function initMathLiveBlock(latexBlock:HTMLTextAreaElement):HTMLTextAreaElement{
             captureSelection: false,
         },
     };
+    var tempMacro = JSON.parse(window.siyuan.config.editor.katexMacros || "{}");
+    tempMacro["\\placeholder"] = "\\phantom";
+    tempMacro["\\ensuremath"] = "#1"
+    window.siyuan.config.editor.katexMacros = JSON.stringify(tempMacro);
     return mathLiveBlock;
 }
 
@@ -122,6 +133,9 @@ function initStyle() {
 }
 .ML__keyboard.is-visible{
     height: calc(var(--keyboard-height) + 10px);
+    --keyboard-background: var(--b3-theme-background-light);
+    --keyboard-toolbar-text-active: var(--b3-theme-primary);
+    --keyboard-toolbar-text: var(--b3-theme-on-background);
 }
 .bigfnbutton {
     margin-bottom: 3px;
