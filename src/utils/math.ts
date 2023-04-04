@@ -136,6 +136,8 @@ function initStyle() {
     --keyboard-background: var(--b3-theme-background-light);
     --keyboard-toolbar-text-active: var(--b3-theme-primary);
     --keyboard-toolbar-text: var(--b3-theme-on-background);
+    --keycap-text: var(--b3-theme-on-background);
+    --keycap-background: var(--b3-theme-background);
 }
 .bigfnbutton {
     margin-bottom: 3px;
@@ -145,6 +147,20 @@ function initStyle() {
 }
 .MLK__backdrop {
     height: calc(var(--keyboard-height) + 10px);
+}
+
+@-moz-document url-prefix() {
+    .MLK__rows li {
+        width: calc(min(var(--max-width), 9%) - var(--margin)) !important;
+    }
+
+    .MLK__rows {
+        width: -moz-available !important;
+    }
+
+    math-field {
+        width: -moz-available !important;
+    }
 }
 `;
     document.body.appendChild(mathlive_css);
