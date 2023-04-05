@@ -23607,6 +23607,7 @@ Note there are a different set of tooltip rules for the keyboard toggle
 
   // src/common/script-url.ts
   function getFileUrl() {
+    return ""
     const stackTraceFrames = String(new Error().stack).replace(/^Error.*\n/, "").split("\n");
     if (stackTraceFrames.length === 0) {
       console.error(
