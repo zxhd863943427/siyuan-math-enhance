@@ -149,6 +149,12 @@ function initStyle() {
     height: calc(var(--keyboard-height) + 10px);
 }
 
+.MLK__rows .bottom {
+    justify-content: center !important;
+    align-items: center !important;
+    padding: 0px;
+}
+
 @-moz-document url-prefix() {
     .MLK__rows li {
         width: calc(min(var(--max-width), 9%) - var(--margin)) !important;
